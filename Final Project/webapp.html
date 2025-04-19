@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>World Cup Penalty Shootout</title>
+  <style>
+    body {
+      background-color: #014421;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    #scoreboard {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .btn {
+      background-color: white;
+      color: #014421;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #ccc;
+    }
+
+    #result {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    #final-message {
+      font-size: 1.8rem;
+      margin-top: 30px;
+      font-weight: bold;
+    }
+
+    #field {
+      position: relative;
+      width: 600px;
+      height: 300px;
+      margin: 20px auto;
+      background-image: url('Stadium.jpg'); /* soccer goal with stadium */
+      background-size: cover;
+      background-position: center;
+      border: 5px solid white;
+      border-radius: 12px;
+    }
+
+    .ball {
+      width: 30px;
+      height: 30px;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/6/6e/Football_%28soccer_ball%29.svg');
+      background-size: cover;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: all 1s ease-in;
+      z-index: 2;
+    }
+
+    .shoot-left {
+      transform: translate(-160px, -100px);
+    }
+
+    .shoot-center {
+      transform: translate(0px, -100px);
+    }
+
+    .shoot-right {
+      transform: translate(140px, -100px);
+    }
+
+    .goalie {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      width: 90px;
+      transform: translateX(-50%);
+      transition: all 1s ease-in-out;
+      z-index: 1;
+    }
+
+    .dive-left {
+      transform: translate(-140px, -20px) rotate(-20deg);
+    }
+
+    .dive-center {
+      transform: translateX(-50%);
+    }
+
+    .dive-right {
+      transform: translate(60px, -20px) rotate(20deg);
+    }
+
+    #trophy {
+      display: none;
+      margin: 20px auto;
+      max-width: 120px;
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+   a {
+        color: aliceblue;
+    }
+  </style>
+</head>
+<body>
+  <h1>World Cup Penalty Shootout</h1>
+  <div id="scoreboard">Shot 1 of 5</div>
+
+  <div class="buttons">
+    <button class="btn" onclick="takeShot('left')">Left</button>
+    <button class="btn" onclick="takeShot('center')">Center</button>
+    <button class="btn" onclick="takeShot('right')">Right</button>
+  </div>
+
+  <div id="result"></div>
+
+  <div id="field">
+    <img id="goalie" class="goalie" src="goalkeeper-clipart-xl.png" alt="Goalie">
+    <div id="ball" class="ball"></div>
+  </div>
+
+  <div id="final-message"></div>
+
+  <!-- Confetti container -->
+  <canvas class="confetti" id="confetti-canvas"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    let shot = 1;
+    let goals = 0;
+    const directions = ["left", "center", "right"];
+    const ball = document.getElementById("ball");
+    const goalie = document.getElementById("goalie");
+
+    function resetPositions() {
+      ball.className = 'ball';
+      goalie.className = 'goalie';
+    }
+
+    function takeShot(playerChoice) {
+      if (shot > 5) return;
+
+      resetPositions();
+
+      setTimeout(() => {
+        ball.classList.add(`shoot-${playerChoice}`);
+      }, 50);
+
+      const keeperChoice = directions[Math.floor(Math.random() * 3)];
+
+      setTimeout(() => {
+        goalie.classList.add(`dive-${keeperChoice}`);
+      }, 100);
+
+      const isGoal = playerChoice !== keeperChoice;
+
+      setTimeout(() => {
+        document.getElementById("result").textContent = isGoal ? `GOAL! ⚽💥` : `SAVE! 🧤`;
+      }, 1000);
+
+      document.getElementById("scoreboard").textContent = `Shot ${shot} of 5`;
+
+      if (isGoal) goals++;
+      if (shot === 5) {
+        setTimeout(() => {
+          document.querySelectorAll(".btn").forEach(btn => btn.disabled = true);
+
+          if (goals >= 4) {
+            document.getElementById("final-message").textContent = `You won the World Cup!! 🏆`;
+            document.getElementById("trophy").style.display = 'block';
+            launchConfetti();
+          } else {
+            document.getElementById("final-message").textContent = `You scored ${goals} out of 5. Try again!`;
+          }
+        }, 1200);
+      }
+
+      shot++;
+      setTimeout(resetPositions, 2000);
+    }
+
+    function launchConfetti() {
+      const duration = 4 * 1000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 }
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+  </script>
+  <a href="WC.html">Back to Scratch Page</a>
+</body>
+</html>
+
