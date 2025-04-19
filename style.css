@@ -1,0 +1,55 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #eafaf1;
+    color: #1f3b20;
+  }
+
+  .navbar {
+    background-color: #2d5f3a !important;
+  }
+
+  .navbar-brand,
+  .nav-link {
+    color: white !important;
+    font-weight: 500;
+  }
+
+  header {
+    background-color: #3b7a57;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+  }
+
+  header img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 4px solid white;
+  }
+
+  h2 {
+    color: #2d5f3a;
+    font-weight: 700;
+  }
+
+  section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  }
+
+  footer {
+    background-color: #2d5f3a;
+  }
+
+  ul {
+    padding-left: 20px;
+  }
+  img {
+      width: 20%;
+      height: 20%;
+  }
